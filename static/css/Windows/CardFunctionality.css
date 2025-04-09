@@ -1,0 +1,60 @@
+#Windows .CardFunctionality #List {
+    height: 100%;
+    width: 100%;
+    padding-top: 1%;
+}
+#Windows .CardFunctionality #List .Item {
+    width: 98%;
+    height: fit-content;
+    margin-left: 1%;
+    background-color: rgb(85, 85, 85);
+    margin-bottom: 1%;
+}
+#Windows .CardFunctionality #List .Item div {
+    display: flex;
+    height: 100%;
+}
+#Windows .CardFunctionality #List .Item #right {
+    float: right;
+    width: 30%;
+    height: 1.5lh;
+}
+#Windows .CardFunctionality #List .Item #right button {
+    height: 80%;
+    width: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 1%;
+    background-color: rgb(78, 78, 78);
+    border-color: rgb(92, 92, 92);
+    cursor: pointer;
+}
+#Windows .CardFunctionality #List .Item #left {
+    height: 100%;
+}
+#Windows .CardFunctionality #List .Item #left #index {
+    margin: 0px;
+    height: 1lh;
+    aspect-ratio: 0.8/1;
+    text-align: right;
+    padding-left: auto;
+}
+#Windows .CardFunctionality #List .Item #left #spacing {
+    margin: 0px;
+    height: 1lh;
+    aspect-ratio: 1/1;
+    text-align: center;
+}
+#Windows .CardFunctionality #List .Item #left #title {
+    margin: 0px;
+    height: 1lh;
+    width: 20%;
+}
+#Windows .CardFunctionality #List .Item #Dropdown {
+    width: 100%;
+    height: 0px;
+    overflow: hidden;
+}
+#Windows .CardFunctionality #List .Item #Dropdown div {
+    display: block;
+}

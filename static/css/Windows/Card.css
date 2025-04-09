@@ -1,0 +1,82 @@
+#Windows .Card #NoTemplate hr {
+    width: 60%;
+    border: 2px solid #353535;
+}
+#Windows .Card #NoTemplate h2 {
+    width: 100%;
+    margin: 0px;
+    text-align: center;
+    padding-top: 5%;
+}
+#Windows .Card #NoTemplate h3 {
+    width: 100%;
+    margin: 0px;
+    text-align: center;
+    padding-top: 1%;
+}
+
+#Windows .Card #SelectCard {
+    height: 90%;
+    width: 90%;
+    padding-left: 3%;
+    padding-top: 3%;
+}
+#Windows .Card #SelectCard .CardSelection {
+    background-color: rgb(82, 82, 82);
+    padding: 1%;
+    cursor: pointer;
+    margin-bottom: 1%;
+}
+
+#Windows .Card #EditDisplay {
+    height: 100%;
+    width: 100%;
+}
+
+#Windows .Card #Selection {
+    height: 100%;
+    width: 20%;
+    float: right;
+    background-color: grey;
+}
+#Windows .Card #Selection h3 {
+    margin: 0px;
+    width: 100%;
+    position: relative;
+}
+#Windows .Card #Selection h3:hover {
+    background-color: rgba(78, 78, 78, 0.432);
+}
+
+#Windows .Card #View {
+    height: 100%;
+    width: 80%;
+    outline: 2px solid grey;
+    outline-offset: -2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+#Windows .Card #View div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+#Windows .Card #View .Selected {
+    outline: 3px solid red;
+    outline-offset: -3px;
+}
+#Windows .Card #View .Body {
+    height: 80%;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+#Windows .Card #View .Box {
+    position:absolute;
+}
+#Windows .Card #View .Text {
+    position:absolute;
+    display: block;
+}

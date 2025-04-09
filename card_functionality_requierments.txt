@@ -1,0 +1,16 @@
+Cards:
+    add and remove effects
+    add, subtract, multi, devide and set stats
+    be able to apply effects and stats to users, attacked, all
+    apply stats/effects under condision (custom function as well)
+    call custom function
+Effects:
+    mode to set how/when the stats/effects/function is applyed
+    add and remove effects
+    add, subtract, multi, devide and set stats
+    apply stats/effects under condision (custom function as well)
+    call custom function
+Game:
+    Transition between scenes under condisions
+Multiplayer:
+    planned for future update

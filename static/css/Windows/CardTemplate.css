@@ -1,0 +1,46 @@
+#Windows .CardTemplate #Selection {
+    height: 100%;
+    width: 20%;
+    float: right;
+    background-color: grey;
+}
+#Windows .CardTemplate #Selection h3 {
+    margin: 0px;
+    width: 100%;
+    position: relative;
+}
+#Windows .CardTemplate #Selection h3:hover {
+    background-color: rgba(78, 78, 78, 0.432);
+}
+#Windows .CardTemplate #View {
+    height: 100%;
+    width: 80%;
+    outline: 2px solid grey;
+    outline-offset: -2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+#Windows .CardTemplate #View div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+#Windows .CardTemplate #View .Selected {
+    outline: 3px solid red;
+    outline-offset: -3px;
+}
+#Windows .CardTemplate #View .Body {
+    height: 80%;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+#Windows .CardTemplate #View .Box {
+    position:absolute;
+}
+#Windows .CardTemplate #View .Text {
+    position:absolute;
+    display: block;
+}

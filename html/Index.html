@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+    <link rel="stylesheet" href="/file/static/css/Index.css">
+    <script src="/file/static/js/Index.js"></script>
+    <script src="/file/static/js/Classes.js"></script>
+</head>
+
+<body>
+    <div id="Loading">Loading...<br>If this is taking a long time, there might have been a problem.</div>
+    <div id="Content" style="display: none;" data-game_name="{{Game_Name}}">
+        <div id="NavBar">
+            <div id="NavOptionBar" class="NavBarSection">
+                <div class="NavBarOption">File
+                    <div class="Dropdown">
+                        <button onclick="Close_Dropdown(); Save()">Save</button>
+                        <button onclick="pywebview.api.Restart();">Restart</button>
+                    </div>
+                </div>
+                <div class="NavBarOption">Create
+                    <div class="Dropdown">
+                        <button onclick="Close_Dropdown(); Create_Window('New Card', 'NewCard')">Card</button>
+                    </div>
+                </div>
+                <div class="NavBarOption">Edit
+                    <div class="Dropdown">
+                        <button
+                            onclick="Close_Dropdown(); Select_Or_Create_Window('Card Template', 'CardTemplate')">Card
+                            Tempate</button>
+                        <button onclick="Close_Dropdown(); Create_Window('Card', 'Card')">Card</button>
+                    </div>
+                </div>
+            </div>
+            <div id="WindowTabSelect" class="NavBarSection">
+                <ul id="WindowTabs">
+
+                </ul>
+            </div>
+        </div>
+        <div id="Inspector" data-target="none">
+
+        </div>
+        <div id="Windows">
+
+        </div>
+    </div>
+</body>
+
+</html>
