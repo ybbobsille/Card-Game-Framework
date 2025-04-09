@@ -82,7 +82,12 @@
             "Test_Card": [
                 {
                     "title": "testing value",
-                    "type": 2
+                    "mode": "1",
+                    "target": "used",
+                    "value": "-3",
+                    "event": "hand - leave",
+                    "type": "1",
+                    "stat": "hp"
                 }
             ]
         }

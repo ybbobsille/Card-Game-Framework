@@ -57,4 +57,5 @@
 }
 #Windows .CardFunctionality #List .Item #Dropdown div {
     display: block;
+    padding: 1%;
 }

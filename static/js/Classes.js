@@ -769,22 +769,127 @@ class Window_CardFunctionality {
 
         target = target.querySelector("#Dropdown")
 
-        console.log(target)
-        console.log(target.style["height"])
         target.style["height"] = (target.style["height"] == "fit-content" ? "0px" : "fit-content")
     }
 
-    _Refresh_Dropdown(id) {
-        html = `
-        <div id="Type">
+    _Refresh_Dropdown = (id) => {
+        var data = Game_Data["Card_Info"]["Function"][this.card_name][id]
+
+        if ("type" in data == false) {data["type"] = 1}
+        if ("mode" in data == false) {data["mode"] = 1}
+        if ("target" in data == false) {data["target"] = "used"}
+        if ("value" in data == false) {data["value"] = 0}
+        if ("event" in data == false) {data["event"] = "hand - leave"}
+
+        var type = data["type"]
+        var mode = data["mode"]
+        var target = data["target"]
+        var value = data["value"]
+        var event = data["event"]
+
+        var html = `
+        <div id="type">
+            type: <br>
             <select>
-                <option ${data[id]["type"] == 1 ? "selected" : ""} value="1">Stats</option>
-                <option ${data[id]["type"] == 2 ? "selected" : ""} value="2">Effects</option>
-                <option ${data[id]["type"] == 3 ? "selected" : ""} value="3">Function</option>
+                <option ${type == 1 ? "selected" : ""} value="1">Stats</option>
+                <option ${type == 2 ? "selected" : ""} value="2">Effects</option>
+                <option ${type == 3 ? "selected" : ""} value="3">Function</option>
             </select>
         </div>`
 
-        documentdocument.querySelector(`#Windows .CardFunctionality[data-window_id="${this.window_id}"] #List .Item[data-id="${id}"] #Dropdown`).innerHTML = html
+        if (type == 1) { // Stats
+            if ("stat" in data == false) {data["stat"] = ""}
+            var stat = data["stat"]
+
+            html += `
+            <div id="mode">
+                mode: <br>
+                <select>
+                    <option ${mode == 1 ? "selected" : ""} value="1">Add/Remove</option>
+                    <option ${mode == 2 ? "selected" : ""} value="2">Multiply/Devide</option>
+                    <option ${mode == 3 ? "selected" : ""} value="3">Set</option>
+                </select>
+            </div>
+            <div id="target">
+                target: <br>
+                <select>
+                    <option ${target == "used" ? "selected" : ""} value="used">Used</option>
+                    <option ${target == "self" ? "selected" : ""} value="self">Self</option>
+                </select>
+            </div>
+            <div id="stat">
+                stat: <br>
+                <input value="${stat}">
+            </div>
+            <div id="value">
+                value: <br>
+                <input type="number" value="${value}">
+            </div>`
+        }
+        else if (type == 2) { // Effects
+            html += `
+            <div id="mode">
+                mode: <br>
+                <select>
+                </select>
+            </div>`
+        }
+        else if (type == 3) { // Function
+            html += `
+            <div id="mode">
+                mode: <br>
+                <select>
+                </select>
+            </div>`
+        }
+
+        html += `
+        <div id="event">
+            event: <br>
+            <select>
+                <option ${event == "hand - turn" ? "selected" : ""} value="hand - turn">Hand - Turn</option>
+                <option ${event == "hand - enter" ? "selected" : ""} value="hand - enter">Hand - Enter</option>
+                <option ${event == "hand - leave" ? "selected" : ""} value="hand - leave">Hand - Leave</option>
+                <option ${event == "discard - turn" ? "selected" : ""} value="discard - turn">Discard - Turn</option>
+                <option ${event == "discard - enter" ? "selected" : ""} value="discard - enter">Discard - Enter</option>
+                <option ${event == "discard - leave" ? "selected" : ""} value="discard - leave">Discard - Leave</option>
+            </select>
+        </div>`
+
+        document.querySelector(`#Windows .CardFunctionality[data-window_id="${this.window_id}"] #List .Item[data-id="${id}"] #Dropdown`).innerHTML = html
+        
+        var select = document.querySelectorAll(`#Windows .CardFunctionality[data-window_id="${this.window_id}"] #List .Item[data-id="${id}"] #Dropdown select`);
+        select.forEach(input => {
+            input.addEventListener('change', (event) => {
+                var value = event.target.value
+                var target = event.target
+                while (target && target.classList.contains("Item") == false) {target = target.parentElement}
+                var id = target.dataset.id
+
+                if (event.target.parentElement.id == "type") {
+                    Game_Data["Card_Info"]["Function"][this.card_name][id]["mode"] = 1
+                }
+                else if (event.target.parentElement.id == "mode") {
+
+                }
+
+                Game_Data["Card_Info"]["Function"][this.card_name][id][event.target.parentElement.id] = value
+                this._Refresh_Dropdown(id)
+            });
+        });
+        var inputs = document.querySelectorAll(`#Windows .CardFunctionality[data-window_id="${this.window_id}"] #List .Item[data-id="${id}"] #Dropdown input`);
+        inputs.forEach(input => {
+            input.addEventListener('change', (event) => {
+                var value = event.target.value
+                var target = event.target
+                while (target && target.classList.contains("Item") == false) {target = target.parentElement}
+                var id = target.dataset.id
+
+                console.log(event.target.parentElement.id)
+                Game_Data["Card_Info"]["Function"][this.card_name][id][event.target.parentElement.id] = value
+                this._Refresh_Dropdown(id)
+            });
+        });
     }
 
     Refresh_List() {
