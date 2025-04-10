@@ -8,6 +8,7 @@
                     "CornerRadius": "0.64cm",
                     "RGB": "rgb(20, 20, 20)"
                 },
+                "Parent":"root",
                 "Children": [
                     "Box",
                     "Box_0"
@@ -22,6 +23,7 @@
                     "Y": "20.3lh",
                     "RGBA": "rgba(100, 100, 100, 0.5)"
                 },
+                "Parent":"Body",
                 "Children": [
                     "Description"
                 ]
@@ -35,6 +37,7 @@
                     "Y": "0.6lh",
                     "RGBA": "rgba(0, 0, 0, 0)"
                 },
+                "Parent":"Body",
                 "Children": [
                     "Title"
                 ]
@@ -45,6 +48,7 @@
                     "TextAlignment": "center",
                     "TextColor": "rgb(0, 0, 0)"
                 },
+                "Parent":"Box",
                 "Content": "this is\nNOT epic"
             },
             "Title": {
@@ -57,6 +61,7 @@
                     "X": "0.4lh",
                     "Y": "0.5lh"
                 },
+                "Parent":"Box_0",
                 "Content": "Hey Look! a card title!"
             }
         },

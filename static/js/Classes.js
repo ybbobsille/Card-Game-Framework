@@ -182,7 +182,33 @@ class Card_Renderer {
     }
 
     _Data_To_Style(data, style_type) {
-
+        if (style_type == "TextColor") {
+            return `rgb(${data[0].value}, ${data[1].value}, ${data[2].value})`
+        }
+        else if (style_type == "Height") {
+            return `${data[0].value}lh`
+        }
+        else if (style_type == "Width") {
+            return `${data[0].value}lh`
+        }
+        else if (style_type == "X") {
+            return `${data[0].value}lh`
+        }
+        else if (style_type == "Y") {
+            return `${data[0].value}lh`
+        }
+        else if (style_type == "AspectRatio") {
+            return `${data[0].value}/${data[1].value}`
+        }
+        else if (style_type == "CornerRadius") {
+            return `${data[0].value}cm`
+        }
+        else if (style_type == "RGBA") {
+            return `rgb(${data[0].value}, ${data[1].value}, ${data[2].value})`
+        }
+        else if (style_type == "RGB") {
+            return `rgba(${data[0].value}, ${data[1].value}, ${data[2].value}, ${data[3].value})`
+        }
     }
 
     _Handle_Inspector_Change = (event) => {
@@ -246,7 +272,7 @@ class Card_Renderer {
         }
         if (CL.contains("TextColor")) {
             var inputs = target.querySelectorAll(".Content .InspectorValue input")
-            var value = `rgb(${inputs[0].value}, ${inputs[1].value}, ${inputs[2].value})`
+            var value = this._Data_To_Style(inputs, "TextColor")
             this.Update_Card_Data([Inspector_Target.dataset.selection_name, "Style", "TextColor"], value)
             Inspector_Target.style["color"] = value
         }
@@ -257,49 +283,49 @@ class Card_Renderer {
         }
         if (CL.contains("Height")) {
             var inputs = target.querySelectorAll(".Content .InspectorValue input")
-            var value = `${inputs[0].value}lh`
+            var value = this._Data_To_Style(inputs, "Height")
             this.Update_Card_Data([Inspector_Target.dataset.selection_name, "Style", "Height"], value)
             Inspector_Target.style["height"] = value
         }
         if (CL.contains("Width")) {
             var inputs = target.querySelectorAll(".Content .InspectorValue input")
-            var value = `${inputs[0].value}lh`
+            var value = this._Data_To_Style(inputs, "Width")
             this.Update_Card_Data([Inspector_Target.dataset.selection_name, "Style", "Width"], value)
             Inspector_Target.style["width"] = value
         }
         if (CL.contains("X")) {
             var inputs = target.querySelectorAll(".Content .InspectorValue input")
-            var value = `${inputs[0].value}lh`
+            var value = this._Data_To_Style(inputs, "X")
             this.Update_Card_Data([Inspector_Target.dataset.selection_name, "Style", "X"], value)
             Inspector_Target.style["left"] = value
         }
         if (CL.contains("Y")) {
             var inputs = target.querySelectorAll(".Content .InspectorValue input")
-            var value = `${inputs[0].value}lh`
+            var value = this._Data_To_Style(inputs, "Y")
             this.Update_Card_Data([Inspector_Target.dataset.selection_name, "Style", "Y"], value)
             Inspector_Target.style["top"] = value
         }
         if (CL.contains("AspectRatio")) {
             var inputs = target.querySelectorAll(".Content .InspectorValue input")
-            var value = `${inputs[0].value}/${inputs[1].value}`
+            var value = this._Data_To_Style(inputs, "AspectRatio")
             this.Update_Card_Data([Inspector_Target.dataset.selection_name, "Style", "AspectRatio"], value)
             Inspector_Target.style["aspect-ratio"] = value
         }
         if (CL.contains("CornerRadius")) {
             var inputs = target.querySelectorAll(".Content .InspectorValue input")
-            var value = `${inputs[0].value}cm`
+            var value = this._Data_To_Style(inputs, "CornerRadius")
             this.Update_Card_Data([Inspector_Target.dataset.selection_name, "Style", "CornerRadius"], value)
             Inspector_Target.style["border-radius"] = value
         }
         if (CL.contains("RGB")) {
             var inputs = target.querySelectorAll(".Content .InspectorValue input")
-            var value = `rgb(${inputs[0].value}, ${inputs[1].value}, ${inputs[2].value})`
+            var value = this._Data_To_Style(inputs, "RGB")
             this.Update_Card_Data([Inspector_Target.dataset.selection_name, "Style", "RGB"], value)
             Inspector_Target.style["background-color"] = value
         }
         if (CL.contains("RGBA")) {
             var inputs = target.querySelectorAll(".Content .InspectorValue input")
-            var value = `rgba(${inputs[0].value}, ${inputs[1].value}, ${inputs[2].value}, ${inputs[3].value})`
+            var value = this._Data_To_Style(inputs, "RGBA")
             this.Update_Card_Data([Inspector_Target.dataset.selection_name, "Style", "RGBA"], value)
             Inspector_Target.style["background-color"] = value
         }
@@ -580,10 +606,15 @@ class Card_Renderer {
             this.Get_SelectionItem(parent_selection_name).appendChild(div)
         }
 
-        //add type to data
+        //add type and parent to data
         if (this.Is_Key_In_Card_Data([child_selection_name]) == false) {
             this.Update_Card_Data([child_selection_name], {})
+
+            //add type
             this.Update_Card_Data([child_selection_name, "Type"], child_type)
+
+            //add parent
+            this.Update_Card_Data([child_selection_name, "Parent"], parent_selection_name)
         }
 
         //add child info to data
