@@ -667,6 +667,9 @@ class Card_Renderer {
     }
 
     Render() {
+        if (this.Is_Key_In_Card_Data(["Body", "Type"]) == false) {
+            this.Update_Card_Data(["Body", "Type"], "Body")
+        }
         this._Render_Loop("root", "Body")
         this.Update_Selection_List()
     }
