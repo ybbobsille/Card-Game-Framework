@@ -184,8 +184,9 @@ async function Load() {
         document.getElementById("Content").style["display"] = "block"
 
         Create_Window('Index', 'Index')
-        Create_Window('Testing basic Functionality for Cards', 'Card')
-        Create_Window('Testing basic Functionality for Cards', 'CardFunctionality', {card_name:"Test_Card"})
+        Select_Or_Create_Window('Card Template', 'CardTemplate')
+        //Create_Window('Testing basic Functionality for Cards', 'Card', {card_name:"Test_Card"})
+        //Create_Window('Testing basic Functionality for Cards', 'CardFunctionality', {card_name:"Test_Card"})
     } catch (error) {
         console.error("Error fetching data:", error);
     }

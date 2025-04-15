@@ -39,19 +39,19 @@ class Card_Renderer {
             "Classes": ["SelectionList", "X", "Y", "Height", "Width", "RGBA", "Parent", "Renamable"],
             "Style": {
                 "background-color": "rgba(0, 0, 0, 1)",
-                "height": "25lh",
-                "width": "25lh",
-                "left": "0lh",
-                "top": "0lh"
+                "height": "50%",
+                "width": "50%",
+                "left": "25%",
+                "top": "25%"
             }
         },
         "Text": {
             "Classes": ["SelectionList", "X", "Y", "Height", "Width", "Font", "TextSize", "TextColor", "TextContent", "TextAlignment", "Renamable"],
             "Style": {
-                "height": "10lh",
-                "width": "10lh",
-                "left": "0lh",
-                "top": "0lh",
+                "height": "10%",
+                "width": "10%",
+                "left": "10%",
+                "top": "5%",
                 "color": "rgb(0, 0, 0)",
                 "text-align": "center"
             }
@@ -158,16 +158,16 @@ class Card_Renderer {
             else { return style.replace("rgb(", "").replace(")", "").split(", ") }
         }
         else if (style_type == "height") {
-            return style.replace("lh", "")
+            return style.replace("%", "")
         }
         else if (style_type == "width") {
-            return style.replace("lh", "")
+            return style.replace("%", "")
         }
         else if (style_type == "left") {
-            return style.replace("lh", "")
+            return style.replace("%", "")
         }
         else if (style_type == "top") {
-            return style.replace("lh", "")
+            return style.replace("%", "")
         }
         else if (style_type == "aspect-ratio") {
             return style.split(" / ")
@@ -186,16 +186,16 @@ class Card_Renderer {
             return `rgb(${data[0].value}, ${data[1].value}, ${data[2].value})`
         }
         else if (style_type == "Height") {
-            return `${data[0].value}lh`
+            return `${data[0].value}%`
         }
         else if (style_type == "Width") {
-            return `${data[0].value}lh`
+            return `${data[0].value}%`
         }
         else if (style_type == "X") {
-            return `${data[0].value}lh`
+            return `${data[0].value}%`
         }
         else if (style_type == "Y") {
-            return `${data[0].value}lh`
+            return `${data[0].value}%`
         }
         else if (style_type == "AspectRatio") {
             return `${data[0].value}/${data[1].value}`
@@ -573,6 +573,7 @@ class Card_Renderer {
     }
 
     AddChild_To_Item(parent_selection_name, child_selection_name, child_type) {
+        console.log(parent_selection_name, child_selection_name, child_type)
         var div = document.createElement("div")
 
         //classes
@@ -676,7 +677,7 @@ class Card_Renderer {
 }
 
 class Window_Card {
-    constructor(window_id) {
+    constructor(window_id, args = undefined) {
         this.window_id = window_id
         this.Has_Card_Template = ("Card_Info" in Game_Data && "Template" in Game_Data["Card_Info"])
         this.Edit_Element = document.querySelector(`#Windows .Card[data-window_id="${this.window_id}"] #EditDisplay`)
@@ -688,6 +689,9 @@ class Window_Card {
             this.SelectCard_Element.style["display"] = "none"
             this.NoTemplate_Element.style["display"] = "block"
         }
+        else if (args != undefined && "card_name" in args) {
+            this.Edit_Card(args["card_name"])
+        } 
         else {
             this.Edit_Element.style["display"] = "none"
             this.SelectCard_Element.style["display"] = "block"
@@ -733,6 +737,8 @@ class Window_Card {
         render.Render()
         render.Select_Selection_Item("Body")
         Window_Data[this.window_id]["Renderer"] = render
+
+        console.log(document.querySelector(`#Windows .Card[data-window_id="${this.window_id}"] #View .Body`).offsetWidth)
     }
 }
 
