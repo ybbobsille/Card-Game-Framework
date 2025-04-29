@@ -8,7 +8,7 @@
                     "CornerRadius": "0.64cm",
                     "RGB": "rgb(20, 20, 20)"
                 },
-                "Parent":"root",
+                "Parent": "root",
                 "Children": [
                     "Box",
                     "Box_0"
@@ -17,13 +17,13 @@
             "Box": {
                 "Type": "Box",
                 "Style": {
-                    "Height": "18.4lh",
-                    "Width": "28.5lh",
-                    "X": "0lh",
-                    "Y": "20.3lh",
+                    "Height": "50%",
+                    "Width": "100%",
+                    "X": "0%",
+                    "Y": "50%",
                     "RGBA": "rgba(100, 100, 100, 0.5)"
                 },
-                "Parent":"Body",
+                "Parent": "Body",
                 "Children": [
                     "Description"
                 ]
@@ -31,13 +31,13 @@
             "Box_0": {
                 "Type": "Box",
                 "Style": {
-                    "X": "0.5lh",
-                    "Height": "19.3lh",
-                    "Width": "27.5lh",
-                    "Y": "0.6lh",
+                    "X": "0%",
+                    "Height": "50%",
+                    "Width": "100%",
+                    "Y": "0%",
                     "RGBA": "rgba(0, 0, 0, 0)"
                 },
-                "Parent":"Body",
+                "Parent": "Body",
                 "Children": [
                     "Title"
                 ]
@@ -46,22 +46,24 @@
                 "Type": "Text",
                 "Style": {
                     "TextAlignment": "center",
-                    "TextColor": "rgb(0, 0, 0)"
+                    "TextColor": "rgb(0, 0, 0)",
+                    "Width": "50%",
+                    "Height": "30%"
                 },
-                "Parent":"Box",
+                "Parent": "Box",
                 "Content": "this is\nNOT epic"
             },
             "Title": {
                 "Type": "Text",
                 "Style": {
-                    "Height": "1.8lh",
-                    "Width": "16.8lh",
+                    "Height": "10%",
+                    "Width": "80%",
                     "TextColor": "rgb(255, 255, 255)",
                     "TextAlignment": "left",
-                    "X": "0.4lh",
-                    "Y": "0.5lh"
+                    "X": "3%",
+                    "Y": "5%"
                 },
-                "Parent":"Box_0",
+                "Parent": "Box_0",
                 "Content": "Hey Look! a card title!"
             }
         },
@@ -97,7 +99,5 @@
             ]
         }
     },
-    "Render_Info": {
-        
-    }
+    "Render_Info": {}
 }
