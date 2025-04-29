@@ -9,8 +9,6 @@ render, inputhander = Runtime.Startup()
 
 escape = 0
 
-frame_history = []
-
 t = time.time()
 delta = 0
 while True and escape < 100: # main loop

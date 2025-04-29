@@ -23,10 +23,12 @@ class Render:
             self.Game_Data = json.load(f)
     
     def tick(self, delta):
+        #region fps
         self.frame_history.append(delta)
         if len(self.frame_history) > 10: self.frame_history.pop(0)
         self.fps = 1 / (sum(self.frame_history) / 10)
         print(f"fps: {self.fps}")
+        #endregion
 
 def Startup():
     print("Runtime Starting...")
