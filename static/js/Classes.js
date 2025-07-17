@@ -55,6 +55,13 @@ class Card_Renderer {
                 "color": "rgb(0, 0, 0)",
                 "text-align": "center"
             }
+        },
+        "Image": {
+            "Classes": ["SelectionList", "X", "Y", "Height", "Width", "Renamable", "CornerRadius", "AspectRatio", "img"],
+            "Style": {
+                "height": "100%",
+                "width": "100%"
+            }
         }
     }
 
@@ -330,7 +337,7 @@ class Card_Renderer {
             Inspector_Target.style["background-color"] = value
         }
         if (CL.contains("CardFunctionality")) {
-            Create_Window(`${this.card_name} Functionality`, "CardFunctionality", {card_name:this.card_name})
+            Create_Window(`${this.card_name} Functionality`, "CardFunctionality", { card_name: this.card_name })
         }
 
         this.Update_Selection_List()
@@ -366,6 +373,7 @@ class Card_Renderer {
                     <option selected value="none">none</option>
                     <option value="Box">Box</option>
                     <option value="Text">Text</option>
+                    <option value="Image">Image</option>
                 </select>
                 <button id="AddChild">Add</button>
             </div>
@@ -489,6 +497,21 @@ class Card_Renderer {
             </div>
         </div>`
         }
+        if (CL.contains("img")) {
+            var img_data = `<option value="test">test</option>`
+
+            html += `<div id="CardFunctionality" class="InspectorItem img">
+            <div class="Title">Image Source</div>
+            <div class="Content">
+                <div class="InspectorValue">Select Image:
+                <select name="SelectImage" class="NoClick">
+                    <option selected value="none">none</option>
+                    ${img_data}
+                </select>
+                </div>
+            </div>
+        </div>`
+        }
 
         html += "</div>"
         Inspector.innerHTML = html
@@ -555,7 +578,9 @@ class Card_Renderer {
 
         var root = this.parent_element
         var items = this.parent_element.querySelectorAll(".SelectionList")
+        console.log("\n\n====================")
         for (var item of items) {
+            console.log(item)
             var path = []
             var target = item
 
@@ -691,7 +716,7 @@ class Window_Card {
         }
         else if (args != undefined && "card_name" in args) {
             this.Edit_Card(args["card_name"])
-        } 
+        }
         else {
             this.Edit_Element.style["display"] = "none"
             this.SelectCard_Element.style["display"] = "block"
@@ -794,7 +819,7 @@ class Window_CardFunctionality {
 
     constructor(window_id, args = undefined) {
         this.window_id = window_id
-        
+
         if (args && "card_name" in args) {
             this.Edit_Card(args["card_name"])
         }
@@ -805,7 +830,7 @@ class Window_CardFunctionality {
 
     Toggle_Dropdown = (event) => {
         var target = event.target
-        while (target && target.classList.contains("Item") == false) {target = target.parentElement}
+        while (target && target.classList.contains("Item") == false) { target = target.parentElement }
 
         target = target.querySelector("#Dropdown")
 
@@ -815,11 +840,11 @@ class Window_CardFunctionality {
     _Refresh_Dropdown = (id) => {
         var data = Game_Data["Card_Info"]["Function"][this.card_name][id]
 
-        if ("type" in data == false) {data["type"] = 1}
-        if ("mode" in data == false) {data["mode"] = 1}
-        if ("target" in data == false) {data["target"] = "used"}
-        if ("value" in data == false) {data["value"] = 0}
-        if ("event" in data == false) {data["event"] = "hand - leave"}
+        if ("type" in data == false) { data["type"] = 1 }
+        if ("mode" in data == false) { data["mode"] = 1 }
+        if ("target" in data == false) { data["target"] = "used" }
+        if ("value" in data == false) { data["value"] = 0 }
+        if ("event" in data == false) { data["event"] = "hand - leave" }
 
         var type = data["type"]
         var mode = data["mode"]
@@ -838,7 +863,7 @@ class Window_CardFunctionality {
         </div>`
 
         if (type == 1) { // Stats
-            if ("stat" in data == false) {data["stat"] = ""}
+            if ("stat" in data == false) { data["stat"] = "" }
             var stat = data["stat"]
 
             html += `
@@ -897,13 +922,13 @@ class Window_CardFunctionality {
         </div>`
 
         document.querySelector(`#Windows .CardFunctionality[data-window_id="${this.window_id}"] #List .Item[data-id="${id}"] #Dropdown`).innerHTML = html
-        
+
         var select = document.querySelectorAll(`#Windows .CardFunctionality[data-window_id="${this.window_id}"] #List .Item[data-id="${id}"] #Dropdown select`);
         select.forEach(input => {
             input.addEventListener('change', (event) => {
                 var value = event.target.value
                 var target = event.target
-                while (target && target.classList.contains("Item") == false) {target = target.parentElement}
+                while (target && target.classList.contains("Item") == false) { target = target.parentElement }
                 var id = target.dataset.id
 
                 if (event.target.parentElement.id == "type") {
@@ -922,7 +947,7 @@ class Window_CardFunctionality {
             input.addEventListener('change', (event) => {
                 var value = event.target.value
                 var target = event.target
-                while (target && target.classList.contains("Item") == false) {target = target.parentElement}
+                while (target && target.classList.contains("Item") == false) { target = target.parentElement }
                 var id = target.dataset.id
 
                 console.log(event.target.parentElement.id)
@@ -952,7 +977,7 @@ class Window_CardFunctionality {
             }
         }
 
-        
+
         var buttons = document.querySelectorAll(`#Windows .CardFunctionality[data-window_id="${this.window_id}"] #List .Item #right button`);
         buttons.forEach(input => {
             input.addEventListener('click', this.Toggle_Dropdown);

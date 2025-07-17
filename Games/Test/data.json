@@ -39,7 +39,8 @@
                 },
                 "Parent": "Body",
                 "Children": [
-                    "Title"
+                    "Title",
+                    "Image_0"
                 ]
             },
             "Description": {
@@ -65,6 +66,10 @@
                 },
                 "Parent": "Box_0",
                 "Content": "Hey Look! a card title!"
+            },
+            "Image_0": {
+                "Type": "Image",
+                "Parent": "Box_0"
             }
         },
         "List": {
