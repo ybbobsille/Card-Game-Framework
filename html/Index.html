@@ -28,10 +28,9 @@
                 </div>
                 <div class="NavBarOption">Edit
                     <div class="Dropdown">
-                        <button
-                            onclick="Close_Dropdown(); Select_Or_Create_Window('Card Template', 'CardTemplate')">Card
-                            Tempate</button>
+                        <button onclick="Close_Dropdown(); Select_Or_Create_Window('Card Template', 'CardTemplate')">Card Tempate</button>
                         <button onclick="Close_Dropdown(); Create_Window('Card', 'Card')">Card</button>
+                        <button onclick="Close_Dropdown(); Select_Or_Create_Window('Resource Manager', 'Resources'); Resource_Manager.Update_Window(['root'])">Resources</button>
                     </div>
                 </div>
             </div>
@@ -45,6 +44,9 @@
 
         </div>
         <div id="Windows">
+
+        </div>
+        <div id="ContextMenu" style="display: none;">
 
         </div>
     </div>

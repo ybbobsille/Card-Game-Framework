@@ -23,7 +23,306 @@ function Get_Card_List() {
     return []
 }
 
-Card_Renderers = {}
+var Card_Renderers = {}
+
+class File_Manager {
+    async Update_Full_File_Tree() {
+        return new Promise((resolveOuter) => {
+          resolveOuter(
+            new Promise((resolveInner) => {
+                pywebview.api.Get_Full_File_Tree(Game_Name)
+                    .then((data) => {
+                        this.file_tree = data.tree
+                        this.file_info = data.file_info
+                        resolveInner()
+                    })
+            }),
+          );
+        });
+    }
+
+    async Delete_Item(item_path) {
+        if (item_path.length == 1) {
+            alert("ERROR: cannot delete root")
+            return
+        }
+        await pywebview.api.Delete_Resource(Game_Name, item_path.join("/"))
+        item_path.pop()
+        this.Update_Window(item_path)
+    }
+
+    async Add_Item(path) {
+        if (path[0] == "") {
+            path[0] = "root"
+        }
+        //alert(`Add item at ${path.join()}`)
+        await pywebview.api.Add_Resource(Game_Name, path.join("/"))
+        this.Update_Window(path)
+    }
+    
+    async Add_Folder(path) {
+        if (path[0] == "") {
+            path[0] = "root"
+        }
+        var folder_name = prompt("Enter folder name:", "New Folder")
+
+        await pywebview.api.Add_Resource_Folder(Game_Name, path.join("/"), folder_name)
+        this.Update_Window(path)
+    }
+
+    Open_Context_Menu(item_path, mouse_pos) {
+        var html = `<div class="menu" style="top: ${mouse_pos.y}px; left: ${mouse_pos.x}px;">
+            <button data-action="del" data-item_path="${item_path.join()}">Delete</button>
+        </div>
+        `
+
+        ContextMenu.style.display = "block"
+        ContextMenu.innerHTML = html
+        //alert(`Open Custom Context menu for item at '${item_path.join()}' at position (${mouse_pos.x}, ${mouse_pos.y})`)
+
+        for (button of document.querySelectorAll("#ContextMenu button")) {
+            button.addEventListener("click", (event) => {
+                if (event.target.dataset.action == "del") {
+                    Resource_Manager.Delete_Item(event.target.dataset.item_path.split(","))
+                }
+            })
+        }
+    }
+
+    async Update_Window(path) {
+        await Resource_Manager.Update_Full_File_Tree()
+        if (path.length == 0) {return}
+        if (path[0] == "") {
+            path[0] = "root"
+        }
+
+        var target = this.file_tree
+        for (var item of path) {
+            target = target[item]
+        }
+
+
+        //update window
+        var html = ""
+        for (var item of Object.keys(target)) {
+            if (typeof target[item] === "object") {
+                //folder
+                html += `<div class="Folder ResourceItem" data-name="${item}" data-folder_path="${path.concat([item]).join()}">
+                    <img src="/static/icons/folder.png">
+                    <p>${item}</p>
+                </div>`
+            }
+            else {
+                //file
+                html += `<div class="file ResourceItem" data-name="${item}" data-file_path="${path.concat([item]).join()}">
+                    <img src="/static/icons/file_${this.file_info[target[item]].type}.png">
+                    <p>${item}</p>
+                </div>`
+            }
+        }
+
+        document.querySelector("#FileWindow").innerHTML = html
+
+        // add events
+        for (item of document.querySelectorAll(".ResourceItem")) {
+            item.addEventListener("click", (event) => {
+                var target = event.target
+
+                if (target.tagName == "IMG") {
+                    target = target.parentElement
+                }
+
+                if ("file_path" in target.dataset) {
+                    this.Select_Item(target.dataset.file_path.split(","))
+                }
+                else {
+                    this.Select_Item(target.dataset.folder_path.split(","))
+                }
+            })
+        }
+
+        //update back button
+        if (path.length > 0) {
+            document.querySelector("#FileNavbarAdd").dataset.curr_path = path.join()
+            document.querySelector("#FileNavbarAddFolder").dataset.curr_path = path.join()
+            document.querySelector("#FileNavBarPathDisplay p").innerHTML = "/" + path.join("/")
+            path.pop()
+            document.querySelector("#FileNavbarBack").dataset.back_path = path.join()
+        }
+    }
+
+    Select_Item(file_path) {
+        var target = this.Get_Item_From_Path(file_path)
+        
+        if (target.dataset.selected == "true") {
+            if ("file_path" in target.dataset) {
+                this.Open_File(file_path)
+            }
+            else {
+                this.Update_Window(file_path)
+            }
+        }
+
+        this.Unselect_Items()
+        target.dataset.selected = "true"
+    }
+
+    Unselect_Items() {
+        for (var item of document.querySelectorAll(".Resources #FileWindow .ResourceItem")) {
+            item.dataset.selected = "false"
+        }
+    }
+
+    Get_Item_From_Path(path) {
+        var target = document.querySelector(`#Windows .Resources #FileWindow .ResourceItem[data-file_path="${path.join()}"]`)
+        if (target == undefined) {target = document.querySelector(`#Windows .Resources #FileWindow .ResourceItem[data-folder_path="${path.join()}"]`)}
+    
+        return target
+    }
+
+    async Get_File_Id_From_Path(path) {
+        return new Promise((resolveOuter) => {
+          resolveOuter(
+            new Promise((resolveInner) => {
+                var target = this.file_tree
+                for (var item of path) {
+                    target = target[item]
+                }
+            
+                if (typeof target === "number") {
+                    resolveInner(target)
+                }
+            
+                resolveInner(undefined)
+            }),
+          );
+        });
+    }
+
+    async Get_File_Content(path) {
+        return new Promise((resolveOuter) => {
+          resolveOuter(
+            new Promise((resolveInner) => {
+                pywebview.api.Get_Resource_Content(Game_Name, path.join("/"))
+                    .then((result) => {
+                        resolveInner(result)
+                    })
+            }),
+          );
+        });
+    }
+
+    async Get_External_Editor_Info(File_Data) {
+        return new Promise((resolveOuter) => {
+          resolveOuter(
+            new Promise((resolveInner) => {
+                pywebview.api.Get_External_Editor_Info(Game_Name, File_Data)
+                    .then((result) => {
+                        resolveInner(result)
+                    })
+            }),
+          );
+        });
+    }
+
+    async Open_File(file_path) {
+        var File_Id = this.Get_File_Id_From_Path(file_path)
+        var File_Info = this.file_info[File_Id]
+        var File_Content_Data = await this.Get_File_Content(file_path)
+        var External_Editor_Data = await this.Get_External_Editor_Info(File_Info)
+
+        var File_Content_html = ""
+        //console.log(File_Info.type, File_Content_Data.mode)
+        if (File_Info.type == "txt" && File_Content_Data.mode == "text") {
+            File_Content_html = `<textarea wrap="off">${File_Content_Data.text}</textarea>`
+        }
+        else if (File_Info.type == "png" && File_Content_Data.mode == "url") {
+            File_Content_html = `<img src="${File_Content_Data.url}?u=${Img_Update++}">`
+        }
+        else {
+            File_Content_html = "(unable to show this file type)"
+        }
+        
+        var html = `<div class="InspectorItem">
+            <div class="Title">Name</div>
+            <div class="Content">
+                <div class="InspectorValue">
+                    Value: <input id="ResourceInspectorNameChange" data-file_path="${file_path.join()}" type="text" value="${File_Info.name}">
+                </div>
+            </div>
+        </div>
+        <div class="InspectorItem">
+            <div class="Title">File Content</div>
+            <div class="Content">
+                <div class="InspectorValue">
+                    Open in ${External_Editor_Data.name} <button id="ResourceInspectorEditorCMD" data-cmd='${External_Editor_Data.cmd}'>Open</button>
+                </div>
+                <div class="InspectorValue">
+                    ${File_Content_html}
+                </div>
+            </div>
+        </div>`
+
+        Inspector.innerHTML = html
+
+        document.getElementById("ResourceInspectorNameChange").addEventListener("focusout", (event) => {
+            var path = event.target.dataset.file_path.split(",")
+            this.Rename_Item(path, event.target.value)
+                .then((new_name) => {
+                    event.target.parentElement.parentElement.querySelector(".Content input").innerHTML = new_name
+                })
+        })
+
+        document.getElementById("ResourceInspectorEditorCMD").addEventListener("click", (event) => {
+            pywebview.api.Execute_CMD(event.target.dataset.cmd)
+        })
+
+        //alert(`open file ${file_path.join()}, id: ${File_Id}`)
+    }
+
+    async Rename_Item(file_path, new_name = undefined) {
+        return new Promise((resolveOuter) => {
+          resolveOuter(
+            new Promise((resolveInner) => {
+                var target = this.Get_Item_From_Path(file_path)
+                var curr_name = target.dataset.name
+                if (new_name == undefined)
+                    {new_name = prompt("Enter new name", curr_name)}
+                if (new_name == undefined) {return}
+
+                pywebview.api.Rename_Resource_Item(Game_Name, file_path.join("/"), new_name)
+                    .then(() => {
+                        file_path.pop()
+                        this.Update_Window(file_path)
+                    })
+                
+                //alert(`Rename ${file_path.join()} to ${new_name}`)
+                resolveInner(new_name)
+            }),
+          );
+        });
+    }
+
+    async Get_Files_Of_Type(type) {
+        return new Promise((resolveOuter) => {
+          resolveOuter(
+            new Promise((resolveInner) => {
+                var files = []
+                for (var fi in this.file_info) {
+                    if (this.file_info[fi].type == type) {
+                        files.push(this.file_info[fi])
+                    }
+                }
+                resolveInner(files)
+            }),
+          );
+        });
+    }
+
+    constructor() {
+        this.Update_Full_File_Tree()
+    }
+}
 
 class Card_Renderer {
     static TemplateBlockInfo = {
@@ -57,10 +356,13 @@ class Card_Renderer {
             }
         },
         "Image": {
-            "Classes": ["SelectionList", "X", "Y", "Height", "Width", "Renamable", "CornerRadius", "AspectRatio", "img"],
+            "Classes": ["SelectionList", "X", "Y", "Height", "Width", "Renamable", "CornerRadius", "img"],
             "Style": {
                 "height": "100%",
-                "width": "100%"
+                "width": "100%",
+                "left":"0%",
+                "top":"0%",
+                "border-radius": "0cm"
             }
         }
     }
@@ -218,7 +520,7 @@ class Card_Renderer {
         }
     }
 
-    _Handle_Inspector_Change = (event) => {
+    _Handle_Inspector_Change = async (event) => {
         var Inspector_Target = this.Get_SelectionItem(document.querySelector("#Inspector").dataset.target)
 
         var target = event.target
@@ -234,7 +536,7 @@ class Card_Renderer {
         if (this.Is_Key_In_Card_Data([Inspector_Target.dataset.selection_name, "Style"]) == false) {
             this.Update_Card_Data([Inspector_Target.dataset.selection_name, "Style"], {})
         }
-
+        
         if (CL.contains("Renamable")) {
             var input = target.querySelector(".Content .InspectorValue input")
             var Old_value = Inspector_Target.dataset.selection_name
@@ -339,11 +641,26 @@ class Card_Renderer {
         if (CL.contains("CardFunctionality")) {
             Create_Window(`${this.card_name} Functionality`, "CardFunctionality", { card_name: this.card_name })
         }
+        if (CL.contains("img")) {
+            var select = document.querySelector("#CardImg select")
+            var file_info = await Resource_Manager.Get_File_Id_From_Path(select.value.split(","))
+            file_info = Resource_Manager.file_info[file_info]
+            var file_content = await Resource_Manager.Get_File_Content(file_info.path.split(","))
+            
+            //update ui
+            Inspector_Target.dataset.image = file_info.path
+            Inspector_Target.querySelector("img").src = file_content.url
+            
+            this.Update_Card_Data([Inspector_Target.dataset.selection_name, "IMG"], file_content.url)
+            
+            //console.log(file_content, file_info)
+            //alert(`IMG UPDATE ${file_content.url}`)
+        }
 
         this.Update_Selection_List()
     }
 
-    _Update_Inspector_Data(element) {
+    async _Update_Inspector_Data(element) {
         var selected = document.querySelector(".Selected")
         if (selected != undefined) { selected.classList.remove("Selected") }
         element.classList.add("Selected")
@@ -498,13 +815,20 @@ class Card_Renderer {
         </div>`
         }
         if (CL.contains("img")) {
-            var img_data = `<option value="test">test</option>`
+            var imgs = await Resource_Manager.Get_Files_Of_Type("png")
+            var img_data = ""
+            
+            for (var img of imgs) {
+                img_data += `
+                    <option value="${img.path}">${img.path.split(",").join("/")}</option>
+                    `
+            }
 
-            html += `<div id="CardFunctionality" class="InspectorItem img">
+            html += `<div id="CardImg" class="InspectorItem img">
             <div class="Title">Image Source</div>
             <div class="Content">
                 <div class="InspectorValue">Select Image:
-                <select name="SelectImage" class="NoClick">
+                <select name="SelectImage">
                     <option selected value="none">none</option>
                     ${img_data}
                 </select>
@@ -578,9 +902,7 @@ class Card_Renderer {
 
         var root = this.parent_element
         var items = this.parent_element.querySelectorAll(".SelectionList")
-        console.log("\n\n====================")
         for (var item of items) {
-            console.log(item)
             var path = []
             var target = item
 
@@ -598,7 +920,6 @@ class Card_Renderer {
     }
 
     AddChild_To_Item(parent_selection_name, child_selection_name, child_type) {
-        console.log(parent_selection_name, child_selection_name, child_type)
         var div = document.createElement("div")
 
         //classes
@@ -607,6 +928,13 @@ class Card_Renderer {
             div.classList.add(classes[c])
         }
         div.classList.add(child_type)
+
+        //misc
+        if (child_type == "Image") {
+            var img = document.createElement("img")
+            img.src = this.Get_Card_Data([child_selection_name, "IMG"])
+            div.appendChild(img)
+        }
 
         //style
         for (const [key, value] of Object.entries(Card_Renderer.TemplateBlockInfo[child_type]["Style"])) {
@@ -763,7 +1091,10 @@ class Window_Card {
         render.Select_Selection_Item("Body")
         Window_Data[this.window_id]["Renderer"] = render
 
-        console.log(document.querySelector(`#Windows .Card[data-window_id="${this.window_id}"] #View .Body`).offsetWidth)
+        // change tab name
+        Change_Window_Name(this.window_id, Card_Name)
+
+        //console.log(document.querySelector(`#Windows .Card[data-window_id="${this.window_id}"] #View .Body`).offsetWidth)
     }
 }
 
@@ -950,7 +1281,6 @@ class Window_CardFunctionality {
                 while (target && target.classList.contains("Item") == false) { target = target.parentElement }
                 var id = target.dataset.id
 
-                console.log(event.target.parentElement.id)
                 Game_Data["Card_Info"]["Function"][this.card_name][id][event.target.parentElement.id] = value
                 this._Refresh_Dropdown(id)
             });

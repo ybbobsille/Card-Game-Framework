@@ -69,7 +69,15 @@
             },
             "Image_0": {
                 "Type": "Image",
-                "Parent": "Box_0"
+                "Parent": "Box_0",
+                "Style": {
+                    "Width": "90%",
+                    "Height": "85%",
+                    "X": "5%",
+                    "Y": "15%",
+                    "CornerRadius": "0.5cm"
+                },
+                "IMG": "/file/Games/Test/Resources/root/test2/test_png2.png"
             }
         },
         "List": {

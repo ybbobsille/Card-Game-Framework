@@ -44,3 +44,11 @@
     position:absolute;
     display: block;
 }
+
+#Windows .CardTemplate #View .Image {
+    position:absolute;
+}
+#Windows .CardTemplate #View .Image img {
+    height: 100%;
+    width: 100%;
+}

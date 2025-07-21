@@ -3,6 +3,9 @@ var Game_Name = null
 var Next_Window_id = 0
 var DropDownMenu = null
 var Window_Data = {}
+var Resource_Manager
+var Mouse_Position
+var Img_Update = 0
 
 function Win_Type_To_Class(win_type) {
     if (win_type == "Card") {
@@ -19,13 +22,18 @@ function Win_Type_To_Class(win_type) {
     }
 }
 
+function Change_Window_Name(Window_Id, new_name) {
+    var window_tab = document.querySelector(`.WindowTab[data-window_id="${Window_Id}"] p`)
+    window_tab.innerHTML = new_name
+}
+
 function Create_Window(title, win_type, args = undefined) {
     var Window_Id = Next_Window_id
     Next_Window_id += 1
 
     //create class and storage location
     Window_Class = Win_Type_To_Class(win_type)
-    Window_Data[Window_Id] = {Class: Window_Class}
+    Window_Data[Window_Id] = { Class: Window_Class }
 
     //create navbar button
     container = document.createElement("div")
@@ -76,11 +84,10 @@ function Create_Window(title, win_type, args = undefined) {
         const css = document.createElement('style');
         css.textContent = result["Css"];
         page.appendChild(css);
-        
+
         Select_Window(result["Window_Id"])
         // start window class
-        if (Window_Data[Window_Id]["Class"]) 
-        {
+        if (Window_Data[Window_Id]["Class"]) {
             if (args == undefined) {
                 Window_Data[Window_Id]["Class"] = new Window_Data[Window_Id]["Class"](Window_Id)
             }
@@ -101,11 +108,11 @@ function Remove_Window(Window_Id) {
     //remove window data
     delete Window_Data[Window_Id]
     Select_Any_Window()
-}
+}   
 
 function Select_Any_Window() {
     windows = document.querySelectorAll("#Windows .Window")
-    if (windows.length != 0) {Select_Window(windows[0].dataset.window_id)}
+    if (windows.length != 0) { Select_Window(windows[0].dataset.window_id) }
 }
 
 function Select_Window(Window_Id) {
@@ -133,7 +140,7 @@ function Select_Window(Window_Id) {
 
 function Select_Or_Create_Window(title, win_type) {
     windows = document.querySelectorAll("#Windows .Window")
-    
+
     for (w of windows) {
         try {
             if (w.dataset.window_type == win_type) {
@@ -141,22 +148,34 @@ function Select_Or_Create_Window(title, win_type) {
                 return
             }
         }
-        catch(e) {}
+        catch (e) { }
     }
 
     Create_Window(title, win_type)
 }
 
+function Get_Active_Window() {
+    windows = document.querySelectorAll("#Windows .Window")
+    for (w of windows) {
+        try {
+            if (w.style.display == "block") {
+                return w
+            }
+        }
+        catch (e) { }
+    }
+}
+
 function Is_Window_Open(win_type) {
     windows = document.querySelectorAll("#Windows .Window")
-    
+
     for (w of windows) {
         try {
             if (w.dataset.window_type == win_type) {
                 return true
             }
         }
-        catch(e) {}
+        catch (e) { }
     }
 
     return false
@@ -169,7 +188,7 @@ function NavBarOption_Dropdown(target) {
 }
 
 function Close_Dropdown() {
-    if (DropDownMenu == null) {return}
+    if (DropDownMenu == null) { return }
 
     DropDownMenu.style["display"] = "none"
     DropDownMenu = null
@@ -177,13 +196,15 @@ function Close_Dropdown() {
 
 async function Load() {
     try {
+        Resource_Manager = new File_Manager()
         const data = await pywebview.api.Load(Game_Name);
         Game_Data = data
-    
+
         document.getElementById("Loading").style["display"] = "none"
         document.getElementById("Content").style["display"] = "block"
 
         Create_Window('Index', 'Index')
+        //Select_Or_Create_Window('Resource Manager', 'Resources')
         //Select_Or_Create_Window('Card Template', 'CardTemplate')
         //Create_Window('Testing basic Functionality for Cards', 'Card', {card_name:"Test_Card"})
         //Create_Window('Testing basic Functionality for Cards', 'CardFunctionality', {card_name:"Test_Card"})
@@ -221,10 +242,92 @@ window.addEventListener('pywebviewready', function () {
             Close_Dropdown()
         }
 
+        if (event.target.id == "FileNavbarBack") {
+            console.log(event.target.dataset.back_path.split(","))
+            Resource_Manager.Update_Window(event.target.dataset.back_path.split(","))
+        }
+        else if (event.target.parentElement.id == "FileNavbarBack") {
+            Resource_Manager.Update_Window(event.target.parentElement.dataset.back_path.split(","))
+        }
+        if (event.target.id == "FileNavbarAdd") {
+            Resource_Manager.Add_Item(event.target.dataset.curr_path.split(","))
+        }
+        else if (event.target.parentElement.id == "FileNavbarAdd") {
+            Resource_Manager.Add_Item(event.target.parentElement.dataset.curr_path.split(","))
+        }
+        if (event.target.id == "FileNavbarAddFolder") {
+            Resource_Manager.Add_Folder(event.target.dataset.curr_path.split(","))
+        }
+        else if (event.target.parentElement.id == "FileNavbarAddFolder") {
+            Resource_Manager.Add_Folder(event.target.parentElement.dataset.curr_path.split(","))
+        }
+
+        if (event.target.id == "FileWindow") {
+            Resource_Manager.Unselect_Items()
+        }
+
         if (event.target && event.target.classList.contains('NavBarOption')) {
             NavBarOption_Dropdown(event.target);
         }
     });
+
+    ContextMenu.addEventListener("click", (event) => {
+        ContextMenu.innerHTML = ""
+        ContextMenu.style.display = "none"
+    })
+
+    //save mouse pos
+    window.addEventListener("mousemove", (event) => {
+        Mouse_Position = {
+            x: event.screenX,
+            y: event.screenY
+        }
+    })
+
+    //custom context menu
+    document.addEventListener('contextmenu', (event) => {
+        //reource manager
+        if (event.target.classList.contains("ResourceItem") || event.target.parentElement.classList.contains("ResourceItem")) {
+            var target = event.target
+            if (target.classList.contains("ResourceItem") == false) {
+                target = target.parentElement
+            }
+            var path
+            if (target.classList.contains("file")) {
+                path = target.dataset.file_path.split(",")
+            }
+            else {
+                path = target.dataset.folder_path.split(",")
+            }
+
+            Resource_Manager.Open_Context_Menu(path, Mouse_Position)
+
+            event.preventDefault();
+        }
+    })
+
+    window.addEventListener("keydown", (event) => {
+        active_window = Get_Active_Window().dataset.window_type
+        if (active_window == "Resources") {
+            if (event.key == "F2") {
+                var item = document.querySelector(`#Windows .Resources #FileWindow .ResourceItem[data-selected="true"]`)
+                if (item != undefined) {
+                    var path = item.dataset.file_path
+                    if (path == undefined) {path = item.dataset.folder_path}
+                    Resource_Manager.Rename_Item(path.split(","))
+                }
+            }
+            else if (event.key == "Delete") {
+                var item = document.querySelector(`#Windows .Resources #FileWindow .ResourceItem[data-selected="true"]`)
+                if (item != undefined) {
+                    var path = item.dataset.file_path
+                    if (path == undefined) {path = item.dataset.folder_path}
+                    Resource_Manager.Delete_Item(path.split(","))
+                }
+            }
+        }
+        //console.log(event)
+    })
 
     Game_Name = document.getElementById("Content").dataset.game_name
 

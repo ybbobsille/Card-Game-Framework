@@ -80,3 +80,11 @@
     position:absolute;
     display: block;
 }
+
+#Windows .Card #View .Image {
+    position:absolute;
+}
+#Windows .Card #View .Image img {
+    height: 100%;
+    width: 100%;
+}
