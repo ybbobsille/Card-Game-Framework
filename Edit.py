@@ -1,9 +1,14 @@
-from enum import Enum
 import os, json, shutil
-from typing import Sequence
-import webview
-import configparser
-from flask import Flask, render_template, redirect, send_from_directory, jsonify
+os.system("cls")
+try:
+    from enum import Enum
+    from typing import Sequence
+    import webview
+    import configparser
+    from flask import Flask, render_template, redirect, send_from_directory, jsonify
+except Exception as e:
+    import sys
+    input(f"ERROR: {e}\ndebug:{sys.executable}\nThis is most likly caused by requirements.txt not being installed currectly")
 
 def Ask_For_File(file_types: dict):
     file_path = webview.windows[0].create_file_dialog(
@@ -80,18 +85,6 @@ class Server:
         return render_template("Index.html",
             Game_Name="Test"
         )
-
-    #@app.after_request
-    #def add_header(r):
-    #    """
-    #    Add headers to both force latest IE rendering engine or Chrome Frame,
-    #    and also to cache the rendered page for 10 minutes.
-    #    """
-    #    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    #    r.headers["Pragma"] = "no-cache"
-    #    r.headers["Expires"] = "0"
-    #    r.headers['Cache-Control'] = 'public, max-age=0'
-    #    return r
 
 class API:
     file_tree: dict
