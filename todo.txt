@@ -1,2 +1,0 @@
-todo:
-- add property on imagess that show size (pixels and aspect)
