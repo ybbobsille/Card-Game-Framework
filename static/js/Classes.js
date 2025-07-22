@@ -101,6 +101,9 @@ class File_Manager {
             target = target[item]
         }
 
+        if (target == undefined) {
+            pywebview.api.Log(`ERROR: target is undefined in File_manager.Update_Window, path: ${path.join()}`)
+        }
 
         //update window
         var html = ""

@@ -218,6 +218,7 @@ class API:
             "Image files (*.png)",
             "Audio files (*.mp3)"
         ))
+        if File_Source == None: return
         if os.path.isfile(File_Source) == False: print(File_Source); return
 
         Target_Path = f"Games/{Game_Name}/Resources/{Target_Path}{"/" if Target_Path != "" else ""}"
@@ -233,6 +234,7 @@ class API:
         if File_Type == "": 
             ...
         
+        if os.path.isdir(Target_Path) == False: os.makedirs(Target_Path)
         with open(f"{Target_Path}{File_Name}", "wb") as f:
             f.write(data)
 
@@ -293,6 +295,9 @@ class API:
     def Execute_CMD(self, cmd: str):
         print(cmd)
         os.system(cmd)
+
+    def Log(self, msg):
+        print(msg)
 
 if __name__ == "__main__":
     global window

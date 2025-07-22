@@ -333,3 +333,7 @@ window.addEventListener('pywebviewready', function () {
 
     Load()
 })
+
+window.onerror = (message, source, lineno, colno, error) => {
+    pywebview.api.Log(`ERROR: ${message},\n${error}\n(error msg is from auto catching)`)
+}
