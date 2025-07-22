@@ -1,4 +1,4 @@
-import os, json, shutil
+import os, json, shutil, sys
 os.system("cls")
 try:
     from enum import Enum
@@ -7,8 +7,8 @@ try:
     import configparser
     from flask import Flask, render_template, redirect, send_from_directory, jsonify
 except Exception as e:
-    import sys
-    input(f"ERROR: {e}\ndebug:{sys.executable}\nThis is most likly caused by requirements.txt not being installed currectly")
+    input(f"ERROR: {e}\ndebug:{sys.executable}\n\nReason: This is most likly caused by requirements.txt not being installed currectly or being launched without using 'Start_Editor.bat'")
+    quit()
 
 def Ask_For_File(file_types: dict):
     file_path = webview.windows[0].create_file_dialog(
@@ -67,9 +67,6 @@ class Config:
 class Server:
     app = Flask(__name__, static_folder="./static", template_folder="./html")
     app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-
-    def Generate_Resource_Url(path):
-        ...
 
     def Package_Data(data: dict | list):
         response = jsonify(data)
@@ -301,14 +298,6 @@ if __name__ == "__main__":
     global window
     api = API()
     server = Server()
-
-    #Config.Set(Config.Sections.USER, "external_editor_txt_name","VS Code")
-    #print(Config.Get(Config.Sections.USER, "external_editor_txt").format(test = "1"))
-
-    #api.Get_Full_File_Tree("Test")
-    #print(api.Get_External_Editor_Info("Test", {'type': 'txt', 'name': 't', 'id': 0, 'path': 'root,t'}))
-    #os.system(api.Get_External_Editor_Info("Test", {'type': 'txt', 'name': 't', 'id': 0, 'path': 'root,t'})["cmd"])
-    #quit()
 
     window = webview.create_window("test", server.app, http_port=56068, js_api=api, maximized=True)
     webview.start(debug=True, http_port=56068)

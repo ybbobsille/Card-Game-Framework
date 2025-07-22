@@ -1138,6 +1138,11 @@ class Window_CardTemplate {
 class Window_NewCard {
     constructor(window_id) {
         this.window_id = window_id
+        document.querySelector("#New_Card_Button").addEventListener("click", (event) => {
+            if ("Card_Info" in Game_Data == false) {Game_Data["Card_Info"] = {}}
+            if ("List" in Game_Data["Card_Info"] == false) {Game_Data["Card_Info"]["List"] = {}} 
+            Game_Data["Card_Info"]["List"][document.querySelector("#New_Card_Input").value] = {}
+        })
     }
 }
 
