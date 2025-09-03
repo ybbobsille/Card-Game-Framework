@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Action_Bar from "../components/Action_Bar";
 import styles from "../style/Select_Game.module.css"
 
 export default function Select_Game() {
@@ -15,6 +16,7 @@ export default function Select_Game() {
 
     return (
         <>  
+            <Action_Bar mode="select" />
             <div className={styles.actionBar}>
                 <h1 className={styles.title}>Select a Game</h1>
             </div>

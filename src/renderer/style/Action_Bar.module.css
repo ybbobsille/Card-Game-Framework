@@ -1,0 +1,34 @@
+.actionBar {
+    background-color: var(--grey-20);
+    width: 100%;
+    height: 30px;
+}
+
+.windowControls {
+    height: 100%;
+    display: flex;
+    width: 150px;
+    float: right;
+}
+
+.windowControls button {
+    height: 100%;
+    width: 50px;
+    background-color: var(--grey-20);
+    border: none;
+}
+
+.windowControls button img {
+    height: 100%;
+    aspect-ratio: 1 / 1;
+}
+
+.windowControls button:hover {
+    background-color: var(--grey-30);
+}
+
+.optionTree {
+    height: 100%;
+    display: flex;
+    width: calc(100% - 150px - 15px);
+}

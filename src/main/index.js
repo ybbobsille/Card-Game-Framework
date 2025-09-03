@@ -21,7 +21,8 @@ const createWindow = () => {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
             nodeIntegration: false,
-        }
+        },
+        frame: false
     })
 
     win.setMenu(null);
@@ -106,6 +107,23 @@ const Ipc_Api = {
 
 //games
 ipcMain.handle("games.list", Ipc_Api.games.List);
+
+//window controls
+ipcMain.on('window:minimize', () => {
+    if (win) win.minimize();
+});
+ipcMain.on('window:maximize', () => {
+    if (win) {
+        if (win.isMaximized()) {
+            win.unmaximize();
+        } else {
+            win.maximize();
+        }
+    }
+});
+ipcMain.on('window:close', () => {
+    if (win) win.close();
+});
 
 app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
