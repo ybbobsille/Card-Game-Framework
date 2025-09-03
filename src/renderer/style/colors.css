@@ -1,0 +1,18 @@
+:root {
+    /* Greyscale Palette: from #666666 (0) to #000000 (100) */
+    --grey-0:   #666666;
+    --grey-10:  #595959;
+    --grey-20:  #4d4d4d;
+    --grey-30:  #404040;
+    --grey-40:  #333333;
+    --grey-50:  #262626;
+    --grey-60:  #1a1a1a;
+    --grey-70:  #141414;
+    --grey-80:  #0d0d0d;
+    --grey-90:  #080808;
+    --grey-100: #000000;
+
+    --text: azure;
+    --text-interactive: #cb30ff;
+    --text-muted: rgb(113, 113, 113);
+}

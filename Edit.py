@@ -10,6 +10,10 @@ except Exception as e:
     input(f"ERROR: {e}\ndebug:{sys.executable}\n\nReason: This is most likly caused by requirements.txt not being installed currectly or being launched without using 'Start_Editor.bat'")
     quit()
 
+# For PyInstaller support
+if hasattr(sys, '_MEIPASS'):
+    os.chdir(sys._MEIPASS)
+
 def Ask_For_File(file_types: dict):
     file_path = webview.windows[0].create_file_dialog(
             webview.OPEN_DIALOG,
@@ -65,7 +69,7 @@ class Config:
             config.write(configfile)
 
 class Server:
-    app = Flask(__name__, static_folder="./static", template_folder="./html")
+    app = Flask(__name__, static_folder="static", template_folder="html")
     app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
     def Package_Data(data: dict | list):
@@ -152,7 +156,7 @@ class API:
                 file_name = file.split(".")
                 file_type = file_name.pop(-1)
                 file_name = ".".join(file_name)
-                file_path = f"{",".join(q)},{file_name}"
+                file_path = f"{','.join(q)},{file_name}"
 
                 target = file_data["tree"]
                 for path in q:
@@ -209,7 +213,7 @@ class API:
             if type(target) != int: target = None
         except:
             target = None
-        return f"Games/{Game_Name}/Resources/{Path}{"" if target == None else f".{self.file_tree["file_info"][str(target)]["type"]}"}"
+        return f"Games/{Game_Name}/Resources/{Path}{'' if target == None else '.' + self.file_tree['file_info'][str(target)]['type']}"
 
     def Add_Resource(self, Game_Name: str, Target_Path: str):
         File_Source = Ask_For_File((
@@ -221,7 +225,7 @@ class API:
         if File_Source == None: return
         if os.path.isfile(File_Source) == False: print(File_Source); return
 
-        Target_Path = f"Games/{Game_Name}/Resources/{Target_Path}{"/" if Target_Path != "" else ""}"
+        Target_Path = f"Games/{Game_Name}/Resources/{Target_Path}{'/' if Target_Path != '' else ''}"
         if os.path.isdir(Target_Path == False): os.makedirs(Target_Path)
 
         data = None
@@ -239,7 +243,7 @@ class API:
             f.write(data)
 
     def Add_Resource_Folder(self, Game_Name: str, Target_Path: str, Name: str):
-        Target_Path = f"Games/{Game_Name}/Resources/{Target_Path}{"/" if Target_Path != "" else ""}{Name}"
+        Target_Path = f"Games/{Game_Name}/Resources/{Target_Path}{'/' if Target_Path != '' else ''}{Name}"
         if os.path.isdir(Target_Path):print(Target_Path);return
         os.makedirs(Target_Path)
 
@@ -283,8 +287,8 @@ class API:
         return content
 
     def Get_External_Editor_Info(self, Game_Name: str, File_Info: dict):
-        cmd = Config.Get(Config.Sections.USER, f"external_editor_{File_Info["type"]}")
-        name = Config.Get(Config.Sections.USER, f"external_editor_{File_Info["type"]}_name")
+        cmd = Config.Get(Config.Sections.USER, f"external_editor_{File_Info['type']}")
+        name = Config.Get(Config.Sections.USER, f"external_editor_{File_Info['type']}_name")
         if cmd == None or name == None: return {"cmd":"start ms-settings:apps-and-features", "name":"(No editor selected)"}
         data = {
             "cmd":cmd.format(fp=self.Get_Full_Resource_Path(Game_Name, File_Info["path"].replace(",", "/")).replace("/", "\\")),

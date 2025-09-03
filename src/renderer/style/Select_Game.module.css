@@ -1,0 +1,40 @@
+.gameList {
+    height: 100%;
+    width: 75%;
+}
+
+.rowNames {
+    background-color: var(--grey-80);
+    margin-bottom: 0 !important;
+}
+
+.gameCard {
+    display: flex;
+    flex-direction: row;
+    padding: 12px;
+    border-bottom: 3px solid var(--grey-90);
+}
+.gameCard:hover {
+    background-color: var(--grey-70);
+    cursor: pointer;
+}
+
+.gameCard p {
+    width: 23%;
+    margin-right: calc(25% - 23%);
+    user-select: none;
+    color: var(--text);
+}
+
+.actionBar {
+    height: 100%;
+    width: 25%;
+    background-color: var(--grey-70);
+    border-left: 3px solid var(--grey-90);
+    float: right;
+}
+
+.title {
+    text-align: center;
+    margin-top: 1em;
+}

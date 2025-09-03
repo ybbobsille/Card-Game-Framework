@@ -1,1 +1,0 @@
-venv\Scripts\python.exe -m Edit > editor_logs.txt 2>&1
